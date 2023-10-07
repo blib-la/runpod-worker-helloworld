@@ -1,6 +1,6 @@
 # RunPod Worker HelloWorld
 
-> Hello World on RunPod serverless
+> Hello World on [RunPod](https://www.runpod.io/) serverless
 
 <!-- toc -->
 
@@ -44,7 +44,7 @@ INFO   | Local testing complete, exiting.
 
 ## Deploy to Dockerhub
 
-* Create an account on Dockerhub if you don't have one already
+* Create an account on [Dockerhub](https://hub.docker.com/) if you don't have one already
 * Login to your account: `docker login`
 * Build your Docker image like this `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform linux/amd64 .`, in this case: `docker build -t timpietruskyblibla/runpod-worker-helloworld:1.0.1 --platform linux/amd64.`
   * Note: We need to specify the platform here, as this is what RunPod requires. If you don't do this, you might see an error like `exec python failed: Exec format error` when you run your worker on RunPod
@@ -98,11 +98,11 @@ curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>
 This will return an `id` that you can then use in the `status` endpoint to find out if your job was processed. 
 
 ```bash
-# Returns a JSON with the id of the job, use that in the status endpoint
+# Returns a JSON with the id of the job (<job_id>), use that in the status endpoint
 curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input": {"greeting": "world"}}' https://api.runpod.ai/v2/<endpoint_id>/run
 
-# Returns the output of our script, in this case {"delayTime":17956,"executionTime":137,"id":"<id>","output":"Hello world","status":"COMPLETED"}
-curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>/status/<id>
+# Returns the output of our script, in this case {"delayTime":17956,"executionTime":137,"id":"<job_id>","output":"Hello world","status":"COMPLETED"}
+curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>/status/<job_id>
 ```
 
 ### Access the API: synchronous
@@ -112,7 +112,7 @@ This endpoint will wait until the job is done and provides the output of our API
 ```bash
 curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input": {"greeting": "world"}}' https://api.runpod.ai/v2/<endpoint_id>/runsync
 
-# {"delayTime":2218,"executionTime":138,"id":"<id>","output":"Hello world","status":"COMPLETED"}
+# {"delayTime":2218,"executionTime":138,"id":"<job_id>","output":"Hello world","status":"COMPLETED"}
 ```
 
 
