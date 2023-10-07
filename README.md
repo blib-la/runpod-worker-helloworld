@@ -112,7 +112,7 @@ This endpoint will wait until the job is done and provides the output of our API
 ```bash
 curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input": {"greeting": "world"}}' https://api.runpod.ai/v2/<endpoint_id>/runsync
 
-# {"delayTime":2218,"executionTime":138,"id":"sync-abf4b8af-c496-4093-b601-ba4dfbcd6aba","output":"Hello world","status":"COMPLETED"}
+# {"delayTime":2218,"executionTime":138,"id":"<id>","output":"Hello world","status":"COMPLETED"}
 ```
 
 
