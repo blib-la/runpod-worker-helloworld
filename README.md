@@ -1,12 +1,15 @@
-# RunPod Worker HelloWorld
+# runpod-worker-helloworld
 
-> Hello World on [RunPod](https://www.runpod.io/) serverless
+> "Hello World" on [RunPod](https://www.runpod.io/) serverless
+
+---
 
 <!-- toc -->
 
 - [Setup](#setup)
 - [Local testing](#local-testing)
 - [Deploy to Dockerhub](#deploy-to-dockerhub)
+  * [Automatically deploy with Github Actions](#automatically-deploy-with-github-actions)
 - [Use your Docker image on RunPod serverless](#use-your-docker-image-on-runpod-serverless)
 - [Interact with your RunPod API](#interact-with-your-runpod-api)
   * [Health status](#health-status)
@@ -51,6 +54,17 @@ INFO   | Local testing complete, exiting.
 * After the image was created, you can see it when you run `docker images`, which provides a list of all images that exist on your computer
 * Push your Docker image to Dockerhub like this `docker push <dockerhub_username>/<repository_name>:<tag>`, in this case: `docker push timpietruskyblibla/runpod-worker-helloworld:1.0.1`
 * Once this is done, you can check your Dockerhub account to find the image
+
+### Automatically deploy with Github Actions
+
+The repo also contains a workflow that publishes the image to Docker hub using Github Actions. If you want to use this, you should add these secrets to your repo:
+
+| Configuration Variable | Description                                                  | Example Value              |
+| ---------------------- | ------------------------------------------------------------ | -------------------------- |
+| `DOCKERHUB_USERNAME`   | Your Docker Hub username.                                    | `your-username`            |
+| `DOCKERHUB_TOKEN`      | Your Docker Hub token for authentication.                    | `your-token`               |
+| `DOCKERHUB_REPO`       | The repository on Docker Hub where the image will be pushed. | `timpietruskyblibla`       |
+| `DOCKERHUB_IMG`        | The name of the image to be pushed to Docker Hub.            | `runpod-worker-helloworld` |
 
 ## Use your Docker image on RunPod serverless
 
