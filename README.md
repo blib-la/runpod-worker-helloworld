@@ -49,15 +49,20 @@ INFO   | Local testing complete, exiting.
 
 * Create an account on [Dockerhub](https://hub.docker.com/) if you don't have one already
 * Login to your account: `docker login`
-* Build your Docker image like this `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform linux/amd64 .`, in this case: `docker build -t timpietruskyblibla/runpod-worker-helloworld:1.0.1 --platform linux/amd64.`
+* Build your Docker image like this `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform linux/amd64 .`, in this case: `docker build -t timpietruskyblibla/runpod-worker-helloworld:latest --platform linux/amd64.`
   * Note: We need to specify the platform here, as this is what RunPod requires. If you don't do this, you might see an error like `exec python failed: Exec format error` when you run your worker on RunPod
 * After the image was created, you can see it when you run `docker images`, which provides a list of all images that exist on your computer
-* Push your Docker image to Dockerhub like this `docker push <dockerhub_username>/<repository_name>:<tag>`, in this case: `docker push timpietruskyblibla/runpod-worker-helloworld:1.0.1`
+* Push your Docker image to Dockerhub like this `docker push <dockerhub_username>/<repository_name>:<tag>`, in this case: `docker push timpietruskyblibla/runpod-worker-helloworld:latest`
 * Once this is done, you can check your Dockerhub account to find the image
 
 ### Automatically deploy with Github Actions
 
-The repo also contains a workflow that publishes the image to Docker hub using Github Actions. If you want to use this, you should add these secrets to your repo:
+The repo contains two workflows that publishes the image to Docker hub using Github Actions:
+
+* [docker-dev.yml](.github/workflows/docker-dev.yml): Creates the image and pushes it to Docker hub with the `dev` tag on every push to the `main` branch
+* [docker-release.yml](.github/workflows/docker-release.yml): Creates the image and pushes it to Docker hub with the `latest` and the release tag. It will only be triggered when you create a release on GitHub
+
+If you want to use this, you should add these secrets to your repository:
 
 | Configuration Variable | Description                                                  | Example Value              |
 | ---------------------- | ------------------------------------------------------------ | -------------------------- |
@@ -71,7 +76,7 @@ The repo also contains a workflow that publishes the image to Docker hub using G
 * Create a [new template](https://runpod.io/console/serverless/user/templates) by clicking on `New Template` 
 * In the dialog, configure:
   * Template Name: `runpod-worker-helloworld` (it can be anything you want)
-  * Container Image: `<dockerhub_username>/<repository_name>:tag`, in this case: `timpietruskyblibla/runpod-worker-helloworld:1.0.1`
+  * Container Image: `<dockerhub_username>/<repository_name>:tag`, in this case: `timpietruskyblibla/runpod-worker-helloworld:latest`
 * You can leave everything as it is, as this repo is public
 * Click on `Save Template`
 * Navigate to [`Serverless > Endpoints`](https://www.runpod.io/console/serverless/user/endpoints) and click on `New Endpoint`
