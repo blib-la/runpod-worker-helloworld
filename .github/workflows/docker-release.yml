@@ -1,9 +1,8 @@
-name: CD | Dev Docker Image
+name: CD | Release Docker Image
 
 on:
-  push:
-    branches:
-      - "main"
+  release:
+    types: [published]
 
 jobs:
   docker:
@@ -36,7 +35,13 @@ jobs:
         with:
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_REPO }}/${{ secrets.DOCKERHUB_IMG }}:dev
+            ${{ secrets.DOCKERHUB_REPO }}/${{ secrets.DOCKERHUB_IMG }}:${{ github.event.release.tag_name }}
+            ${{ secrets.DOCKERHUB_REPO }}/${{ secrets.DOCKERHUB_IMG }}:latest
 
-
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          repository: ${{ secrets.DOCKERHUB_REPO }}/${{ secrets.DOCKERHUB_IMG }}
 
