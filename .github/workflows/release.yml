@@ -23,5 +23,5 @@ jobs:
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-        run: npx semantic-release
+        run: npx semantic-release -e @semantic-release/git
 
