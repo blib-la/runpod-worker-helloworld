@@ -1,12 +1,16 @@
 name: CD | Release Docker Image
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
 
 jobs:
   docker:
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, 'chore(release)') }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -44,4 +48,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           repository: ${{ secrets.DOCKERHUB_REPO }}/${{ secrets.DOCKERHUB_IMG }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+  
+      - name: Install dependencies
+        run: npm install
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+        run: npx semantic-release
 
