@@ -2,6 +2,12 @@
 
 > "Hello World" on [RunPod](https://www.runpod.io/) serverless
 
+<p align="center">
+  <img src="assets/construction_site_with_banner_reading_runpod_worker_hello_world.jpg" title="Construction site with a large banner that reads RunPod Worker Hello World RunPod Worker" />
+</p>
+
+---
+
 ---
 
 <!-- toc -->
