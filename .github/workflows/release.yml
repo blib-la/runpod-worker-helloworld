@@ -40,6 +40,9 @@ jobs:
       - name: Semantic release
         uses: codfish/semantic-release-action@v3
         id: semanticrelease
+        with: 
+            additional-packages: |
+                ['@semantic-release/git']
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
