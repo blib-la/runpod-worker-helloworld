@@ -7,7 +7,7 @@ on:
       - "main"
 
 jobs:
-  docker:
+  release:
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'chore(release)') }}
     permissions:
@@ -47,6 +47,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push
+        if: steps.semanticrelease.outputs.new-release-published == 'true'
         uses: docker/build-push-action@v5
         with:
           push: true
@@ -55,6 +56,7 @@ jobs:
             ${{ secrets.DOCKERHUB_REPO }}/${{ secrets.DOCKERHUB_IMG }}:latest
   
       - name: Docker Hub Description
+        if: steps.semanticrelease.outputs.new-release-published == 'true'
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
