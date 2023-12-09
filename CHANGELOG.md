@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/blib-la/runpod-worker-helloworld/compare/1.4.0...1.5.0) (2023-12-09)
+
+
+### Features
+
+* update ToC in README.md ([7686519](https://github.com/blib-la/runpod-worker-helloworld/commit/76865192518cbd354b67c20351dd6095fe92df5a))
+
 # [1.4.0](https://github.com/blib-la/runpod-worker-helloworld/compare/1.3.0...1.4.0) (2023-12-09)
 
 

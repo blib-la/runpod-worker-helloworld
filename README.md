@@ -10,6 +10,7 @@
 
 <!-- toc -->
 
+- [Features](#features)
 - [Setup](#setup)
 - [Local testing](#local-testing)
 - [Deploy to Dockerhub](#deploy-to-dockerhub)
