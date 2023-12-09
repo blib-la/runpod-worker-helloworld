@@ -4,11 +4,9 @@ FROM python:3.10-alpine
 # Define your working directory
 WORKDIR /
 
-# Install runpod
-RUN pip install runpod
-
 # Add your handler
-ADD rp_handler.py .
+ADD src/start.sh src/rp_handler.py requirements.txt ./
+RUN chmod +x /start.sh
 
-# Call your handler when the container starts
-CMD [ "python", "-u", "/rp_handler.py" ]
+# Start the container
+CMD /start.sh
