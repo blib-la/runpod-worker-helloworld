@@ -1,6 +1,6 @@
 # runpod-worker-helloworld
 
-> "Hello World" on [RunPod](https://www.runpod.io/) serverless
+> Getting started with a serverless API on [RunPod](https://www.runpod.io/)
 
 <p align="center">
   <img src="assets/construction_site_with_banner_reading_runpod_worker_hello_world.jpg" title="Construction site with a large banner that reads RunPod Worker Hello World RunPod Worker" />
@@ -24,6 +24,11 @@
 <!-- tocstop -->
 
 ---
+
+## Features
+
+* GitHub workflow to create a semantic release and push the image to Docker Hub
+
 
 ## Setup
 
@@ -130,7 +135,7 @@ curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>
 
 ### Access the API: synchronous
 
-This endpoint will wait until the job is done and provides the output of our API as the response:
+This endpoint will wait until the job is done and provide the output of our API as the response:
 
 ```bash
 curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input": {"greeting": "world"}}' https://api.runpod.ai/v2/<endpoint_id>/runsync
