@@ -38,6 +38,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      - name: Update the ToC in the README.md
+        run: npx markdown-toc README.md -i
+
       - name: Semantic release
         uses: codfish/semantic-release-action@v3
         id: semanticrelease
