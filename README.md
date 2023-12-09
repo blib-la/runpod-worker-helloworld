@@ -27,20 +27,27 @@
 
 ## Features
 
-* GitHub workflow to create a semantic release and push the image to Docker Hub
+* Provides a starting point to create a severless worker for RunPod
+* GitHub workflow for a release
+  * Updates Table of Contents in the README.md
+  * Creates a release on GitHub using semantic versioning based on [semantic-release](https://semantic-release.gitbook.io)
+  * Pushes the image to Docker Hub using the release-version and the latest tag
+  * Generates a CHANGELOG.md
+* GitHub workflow for development
+* Foundation for unit testing in [tests](/tests)
 
 
 ## Setup
 
 * Clone the repo to your computer
-* Create an env with [conda](https://www.anaconda.com/download): `conda create --name runpod-helloworld python=3.10`
-* Activate the env: `conda activate runpod-helloworld`
-* Install the `runpod` lib: `pip install runpod`
-* Make sure to have [Docker installed on your computer](https://www.docker.com/get-started/)
+* Create a virtual environment: `python -m venv venv`
+* Activate the virtual environment: `.\venv\Scripts\activate` (Windows) or `source ./venv/bin/activate` (Mac / Linux)
+* Install the dependencies: `pip install -r requirements.txt`
+* Make sure to have [Docker installed on your computer](https://www.docker.com/get-started/) if you want to build the image
 
 ## Local testing
 
-Execute `python rp_handler.py`, which will then output something like this:
+Execute `python src/rp_handler.py`, which will then output something like this:
 
 ```
 --- Starting Serverless Worker |  Version 1.2.6 ---
@@ -53,6 +60,10 @@ INFO   | Job local_test completed successfully.
 INFO   | Job result: {'output': 'Hello world'}
 INFO   | Local testing complete, exiting.
 ```
+
+## Unit testing
+
+- Run all tests: `python -m unittest discover`
 
 ## Deploy to Dockerhub
 
