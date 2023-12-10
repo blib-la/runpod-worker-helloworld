@@ -4,9 +4,12 @@ FROM python:3.10-alpine
 # Define your working directory
 WORKDIR /
 
-# Add your handler
+# Add your src
 ADD src/start.sh src/rp_handler.py requirements.txt ./
 RUN chmod +x /start.sh
 
-# Start the container
+# Intall dependencies
+RUN pip install -r requirements.txt
+
+# Run the start script
 CMD /start.sh
