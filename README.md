@@ -1,9 +1,9 @@
 <div align="center">
   <h1>runpod-worker-helloworld</h1>
 
-  <blockquote>Getting started with a serverless API on <a href="https://www.runpod.io/">RunPod</a></blockquote>
+  <blockquote>Getting started with a serverless endpoint on <a href="https://www.runpod.io/">RunPod</a> by creating a custom worker</blockquote>
 
-  <img src="assets/construction_site_with_banner_reading_runpod_worker_hello_world.jpg" title="Construction site with a large banner that reads RunPod Worker Hello World RunPod Worker" />
+  <img src="assets/construction_site_with_banner_reading_runpod_worker_hello_world.jpg" title="Construction site with a large banner that reads 'RunPod Worker Hello World'" />
 </div>
 
 ---
@@ -15,17 +15,22 @@
 - [Local testing](#local-testing)
   * [Run the handler](#run-the-handler)
   * [Unit Tests](#unit-tests)
-- [Deploy your image](#deploy-your-image)
-  * [Automatically deploy with GitHub Actions](#automatically-deploy-with-github-actions)
+  * [Run the Docker image](#run-the-docker-image)
+- [Build and release your Docker image](#build-and-release-your-docker-image)
+  * [Automatically with GitHub Actions](#automatically-with-github-actions)
     + [Configuration](#configuration)
-    + [dev workflow](#dev-workflow)
-    + [release workflow](#release-workflow)
+    + [Dev Workflow](#dev-workflow)
+    + [Release Workflow](#release-workflow)
   * [Manually](#manually)
+    + [Build the Docker image](#build-the-docker-image)
+    + [Push the Docker image to Docker Hub](#push-the-docker-image-to-docker-hub)
 - [Use your Docker image on RunPod serverless](#use-your-docker-image-on-runpod-serverless)
-- [Interact with your RunPod API](#interact-with-your-runpod-api)
-  * [Health status](#health-status)
-  * [Access the API: async](#access-the-api-async)
-  * [Access the API: synchronous](#access-the-api-synchronous)
+- [Interact with your RunPod endpoint](#interact-with-your-runpod-endpoint)
+  * [Health status of your endpoint](#health-status-of-your-endpoint)
+  * [Start an async job](#start-an-async-job)
+  * [Start a sync job](#start-a-sync-job)
+  * [Get the status of a specific job](#get-the-status-of-a-specific-job)
+- [Where to go from here?](#where-to-go-from-here)
 - [Acknowledgments](#acknowledgments)
 - [Credits](#credits)
 
@@ -35,11 +40,13 @@
 
 ## Features
 
-To help you get started creating your serverless worker on [RunPod](https://www.runpod.io/), we packed some basics and opinions into this "Hello World":
- 
-* GitHub [dev workflow](#dev-workflow) during development
-* GitHub [release workflow](#release-workflow) when you want to publish a fully automated new version
-* Foundation for unit testing in [tests](/tests)
+This project provides a set of starting points for creating your worker (= Docker image) to create a custom serverless endpoint on [RunPod](https://www.runpod.io/):
+
+* Simple [start script](src/start.sh) that makes sure to start the handler and whatever you need your worker to have, so that it can do its work (like starting [ComfyUI](https://github.com/comfyanonymous/ComfyUI))
+* Basic [handler]([src/rp_handler.py](src/rp_handler.py)), that you can extend with the business logic that you need for your use case
+* GitHub [dev](#dev-workflow) workflow during the development of your Docker image
+* GitHub [release](#release-workflow) workflow when you want to publish a fully automated new version of your Docker image
+* Foundation for [unit tests](/tests) to get started with Test-driven development (TDD)
 
 ## Setup
 
@@ -81,17 +88,26 @@ Ran 3 tests in 0.000s
 OK
 ```
 
-## Deploy your image
+### Run the Docker image
+
+We included a [docker-compose.yml](docker-compose.yml) which makes it possible to easily run the Docker image locally: `docker-compose up`
+
+This will only work for Linux-based systems, as we only create an image for Linux, as this is what RunPod requires. To do this for Mac or Windows, you have to follow the steps to [build the image manually](#build-the-docker-image). Make sure to build the image with the `dev` tag, as this is used in the [docker-compose.yml](docker-compose.yml).  
+
+
+## Build and release your Docker image
 
 To use your Docker image on [RunPod](https://www.runpod.io/), it must exist in a Docker image registry. We are using [Docker Hub](https://hub.docker.com) for this, but feel free to choose whatever you want. 
 
-### Automatically deploy with GitHub Actions
+### Automatically with GitHub Actions
 
-The repo contains two workflows that publish the image to [Docker Hub](https://hub.docker.com) using GitHub Actions: [dev.yml](.github/workflows/dev.yml) and [release.yml](.github/workflows/release.yml)
+The repo contains two workflows that publish the image to [Docker Hub](https://hub.docker.com) using GitHub Actions: [dev.yml](.github/workflows/dev.yml) and [release.yml](.github/workflows/release.yml). 
+
+This process is highly opinionated and you should adapt it to what you are used to. 
 
 #### Configuration
 
-If you want to use this, you should add these secrets to your repository:
+If you want to use these workflows, you have to add these secrets to your repository:
 
 | Configuration Variable | Description                                                  | Example Value              |
 | ---------------------- | ------------------------------------------------------------ | -------------------------- |
@@ -100,37 +116,43 @@ If you want to use this, you should add these secrets to your repository:
 | `DOCKERHUB_REPO`       | The repository on Docker Hub where the image will be pushed. | `timpietruskyblibla`       |
 | `DOCKERHUB_IMG`        | The name of the image to be pushed to Docker Hub.            | `runpod-worker-helloworld` |
 
-#### dev workflow
+#### Dev Workflow
 
-When you work on your project and want to provide bug fixes or features to your community, you can put them into [dev](.github/workflows/dev.yml). This will do these steps: 
+When you are developing your image and want to provide bug fixes or features to your community, you can put them into the `dev` branch. This will trigger the [dev](.github/workflows/dev.yml) workflow, which runs these steps: 
 
+* Execute the unit tests
 * Build the image
 * Push the image to [Docker Hub](https://hub.docker.com) using the `dev` tag
 
-The workflow will be triggered by commits in the `dev` branch.
+#### Release Workflow
 
-#### release workflow
+When development is done and you are ready for a new release of your image, you can put all your changes into the `main` branch. This will trigger the [release](.github/workflows/release.yml) workflow, which runs these steps:
 
-When everything is done and you want to create a [release](.github/workflows/release.yml) of your image, it will do these steps:
-
+* Execute the unit tests
 * Update "Table of Contents" in the `README.md`
 * Create a release on GitHub using [Semantic Versioning](https://semver.org) based on [semantic-release](https://semantic-release.gitbook.io) (which only works if you follow one of the [commit message formats](https://semantic-release.gitbook.io/semantic-release/#commit-message-format), the default are the [Angular Commit Message Conventions](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#-commit-message-format) as you can also see in this repo)
 * Update the `CHANGELOG.md`
 * Build the image
-* Push the image to [Docker Hub](https://hub.docker.com) using the release-version and the `latest` tag
+* Push the image to [Docker Hub](https://hub.docker.com) and tag it with both the release version and `latest`
 * Update the description of the image on [Docker Hub](https://hub.docker.com)
-
-The workflow will be triggered by commits in the `main` branch. 
 
 ### Manually
 
-* Create an account on [Dockerhub](https://hub.docker.com/) if you don't have one already
+#### Build the Docker image
+
+* Build your Docker image like this `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform linux/amd64 .`, in this case: `docker build -t timpietruskyblibla/runpod-worker-helloworld:latest --platform linux/amd64 .`
+  * We need to specify the platform here, as this is what RunPod requires. If you don't do this, you might see an error like `exec python failed: Exec format error` when you run your worker on RunPod, depending on the OS you are using locally
+  * If you want to run your image locally and you are not using a Linux-based OS, then you have to use the appropriate platform:
+    * Windows: `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform windows/amd64 .`
+    * MacOS with Apple Silicon: `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform linux/arm64 .`
+* After the image is created, you can see it when you run `docker images`, which provides a list of all images that exist on your computer
+
+#### Push the Docker image to Docker Hub
+
+* Create an account on [Docker Hub](https://hub.docker.com/) if you don't have one already
 * Login to your account: `docker login`
-* Build your Docker image like this `docker build -t <dockerhub_username>/<repository_name>:<tag> --platform linux/amd64 .`, in this case: `docker build -t timpietruskyblibla/runpod-worker-helloworld:latest --platform linux/amd64.`
-  * Note: We need to specify the platform here, as this is what RunPod requires. If you don't do this, you might see an error like `exec python failed: Exec format error` when you run your worker on RunPod
-* After the image was created, you can see it when you run `docker images`, which provides a list of all images that exist on your computer
-* Push your Docker image to Dockerhub like this `docker push <dockerhub_username>/<repository_name>:<tag>`, in this case: `docker push timpietruskyblibla/runpod-worker-helloworld:latest`
-* Once this is done, you can check your Dockerhub account to find the image
+* Push your Docker image to [Docker Hub](https://hub.docker.com/) like this `docker push <dockerhub_username>/<repository_name>:<tag>`, in this case: `docker push timpietruskyblibla/runpod-worker-helloworld:latest`
+* Once this is done, you can check your [Docker Hub](https://hub.docker.com/) account to find the image
 
 
 ## Use your Docker image on RunPod serverless
@@ -153,14 +175,14 @@ The workflow will be triggered by commits in the `main` branch.
   * Select a GPU that has some availability
   * GPUs/Worker: `1` (keep this low as we are just testing, we don't need multiple GPUs for a hello world)
 * Click `deploy`
-* Your endpoint will be created, you can click on it to see the dashboard and also the different API methods that are available:
-  * runsync
-  * run
-  * status
-  * cancel
-  * health
+* Your endpoint will be created, you can click on it to see the dashboard and also the available API methods:
+  * `runsync`: Sync request to start a job, where you can wait for the job result
+  * `run`: Async request to start a job, where you receive an `id` immediately
+  * `status`: Sync request to find out what the status of a job is, given `id`
+  * `cancel`: Sync request to cancel a job, given `id`
+  * `health`: Sync request to check the health of the endpoint to see if everything is fine
 
-## Interact with your RunPod API
+## Interact with your RunPod endpoint
 
 * In the [User Settings](https://www.runpod.io/console/serverless/user/settings) click on `API Keys` and then on the `API Key` button
 * Save the generated key somewhere, as you will not be able to see it again when you navigate away from the page
@@ -168,27 +190,28 @@ The workflow will be triggered by commits in the `main` branch.
   * Replace `<api_key>` with your key
   * Replace `<endpoint_id>` with the ID of the endpoint, you find that when you click on your endpoint, it's part of the URLs shown at the bottom of the first box
 
-### Health status
+### Health status of your endpoint
 
 ```bash
 curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>/health
 ```
 
-### Access the API: async
+### Start an async job
 
-This will return an `id` that you can then use in the `status` endpoint to find out if your job was processed. 
+This will return an `id` that you can then use in the `status` endpoint to find out if your job was completed. 
 
 ```bash
 # Returns a JSON with the id of the job (<job_id>), use that in the status endpoint
 curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input": {"greeting": "world"}}' https://api.runpod.ai/v2/<endpoint_id>/run
 
-# Returns the output of our script, in this case {"delayTime":17956,"executionTime":137,"id":"<job_id>","output":"Hello world","status":"COMPLETED"}
-curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>/status/<job_id>
+# {"id":"<job_id>","status":"IN_QUEUE"}
 ```
 
-### Access the API: synchronous
+### Start a sync job
 
-This endpoint will wait until the job is done and provide the output of our API as the response:
+This endpoint will wait until the job is done and provide the output of our API as the response.
+
+If you do a sync request to an endpoint that has no free workers to pick up the job, you will wait for some time. Either your job will be picked up if a worker gets free or the job gets added to the queue (provided by the endpoint), which will result in you receiving an `id`. You then have to manually ask the `/status` endpoint to get information about when the job was completed. 
 
 ```bash
 curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/json" -d '{"input": {"greeting": "world"}}' https://api.runpod.ai/v2/<endpoint_id>/runsync
@@ -196,6 +219,17 @@ curl -X POST -H "Authorization: Bearer <api_key>" -H "Content-Type: application/
 # {"delayTime":2218,"executionTime":138,"id":"<job_id>","output":"Hello world","status":"COMPLETED"}
 ```
 
+### Get the status of a specific job
+
+```bash
+curl -H "Authorization: Bearer <api_key>" https://api.runpod.ai/v2/<endpoint_id>/status/<job_id>
+
+# {"delayTime":3289,"executionTime":1054,"id":"<job_id>","output":"Hello world","status":"COMPLETED"}
+```
+
+## Where to go from here?
+
+* [RunPod Workers](https://github.com/runpod-workers): A list of workers provided by RunPod
 
 ## Acknowledgments
 
