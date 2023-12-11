@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+  helloworld:
+    image: timpietruskyblibla/runpod-worker-helloworld:dev
+    container_name: runpod-worker-helloworld
+    volumes:
+      - ./test_input.json:/test_input.json
