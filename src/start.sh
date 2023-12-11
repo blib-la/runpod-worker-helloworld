@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Use libtcmalloc for better memory management
 TCMALLOC="$(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1)"
