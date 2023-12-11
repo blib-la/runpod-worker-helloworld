@@ -1,4 +1,4 @@
-name: Push the dev to Docker Hub
+name: Development
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       - "dev"
 
 jobs:
-  docker:
+  dev:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

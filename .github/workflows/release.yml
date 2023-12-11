@@ -1,4 +1,4 @@
-name: Create Release on GitHub & push to Docker Hub
+name: Release
 
 on:
   workflow_dispatch:
