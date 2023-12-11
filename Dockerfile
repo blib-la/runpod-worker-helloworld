@@ -4,7 +4,7 @@ FROM python:3.10-alpine
 # Label your image with metadata
 LABEL maintainer="info@blib.la"
 LABEL org.opencontainers.image.source https://github.com/blib-la/runpod-worker-helloworld
-LABEL org.opencontainers.image.description "Getting started with a serverless endpoint on RunPod by creating a custom workerUI"
+LABEL org.opencontainers.image.description "Getting started with a serverless endpoint on RunPod by creating a custom worker"
 
 # Define your working directory
 WORKDIR /
@@ -14,7 +14,7 @@ COPY requirements.txt ./
 
 # Intall dependencies
 RUN apk add --no-cache bash gcc libc-dev libffi-dev && \
-    pip install --no-cache-dir -r requirements.txt
+    pip3 install --no-cache-dir -r requirements.txt
 
 # Copy your source code into the image
 COPY src/ .
