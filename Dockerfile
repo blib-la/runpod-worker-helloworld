@@ -13,7 +13,7 @@ WORKDIR /
 COPY requirements.txt ./
 
 # Intall dependencies
-RUN apk add --no-cache bash && \
+RUN apk add --no-cache bash gcc libc-dev libffi-dev && \
     pip install --no-cache-dir -r requirements.txt
 
 # Copy your source code into the image
